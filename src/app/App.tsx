@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "../components/layout/layout";
 import Home from "./home";
 import SignIn from "./sign-in";
-import User from "./user";
+import UserProfile from "./profile";
 
 function App() {
   return (
@@ -24,8 +24,8 @@ function App() {
             element={<SignIn />}
           />
           <Route
-            path="/user/:id"
-            element={<User />}
+            path="/profile"
+            element={<UserProfile />}
           />
         </Route>
       </Routes>
