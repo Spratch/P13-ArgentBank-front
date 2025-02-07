@@ -1,17 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-
-// Authentication
-const authenticationSlice = createSlice({
-  name: "authentication",
-  initialState: {
-    user: null
-  },
-  reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
-    }
-  }
-});
+import { authApi } from "./services";
 
 // Profile
 const profileSlice = createSlice({
@@ -29,9 +17,11 @@ const profileSlice = createSlice({
 // Store
 const store = configureStore({
   reducer: {
-    authentication: authenticationSlice.reducer,
+    [authApi.reducerPath]: authApi.reducer,
     profile: profileSlice.reducer
-  }
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(authApi.middleware)
 });
 
 export default store;
