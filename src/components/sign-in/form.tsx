@@ -1,21 +1,20 @@
 import { useState } from "react";
-import { useLoginMutation } from "../../redux/services";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../redux/store";
+import { loginApi } from "../../redux/features/auth.slice";
 
 export default function SignInForm() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const [login, { isLoading }] = useLoginMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const authState = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await login({ email, password }).unwrap();
-      console.log(result);
-      navigate("/profile");
+      await dispatch(loginApi({ email, password }));
     } catch (err) {
       console.error("Échec de la connexion:", err);
     }
@@ -56,12 +55,14 @@ export default function SignInForm() {
         <button
           type="submit"
           className="sign-in-button"
-          disabled={isLoading}
+          disabled={authState.status === "loading"}
           onClick={handleSubmit}
         >
           Sign In
         </button>
       </form>
+      {authState.status === "loading" && <p>Chargement...</p>}
+      {authState.status === "failed" && <p>Erreur: {authState.error}</p>}
     </section>
   );
 }

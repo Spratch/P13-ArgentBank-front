@@ -1,27 +1,12 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { authApi } from "./services";
+import { configureStore } from "@reduxjs/toolkit";
+import { authReducer } from "./features/auth.slice";
 
-// Profile
-const profileSlice = createSlice({
-  name: "profile",
-  initialState: {
-    accounts: []
-  },
-  reducers: {
-    setAccounts: (state, action) => {
-      state.accounts = action.payload;
-    }
+const store = configureStore({
+  reducer: {
+    auth: authReducer
   }
 });
 
-// Store
-const store = configureStore({
-  reducer: {
-    [authApi.reducerPath]: authApi.reducer,
-    profile: profileSlice.reducer
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware)
-});
-
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export default store;
