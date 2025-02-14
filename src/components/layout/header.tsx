@@ -12,9 +12,9 @@ export default function Header() {
     dispatch(logout());
   };
 
-  const user = {
-    firstName: "Tony"
-  };
+  const firstName = useSelector(
+    (state: RootState) => state.profile.user?.firstName
+  );
 
   return (
     <nav className="main-nav">
@@ -41,12 +41,12 @@ export default function Header() {
         </div>
       ) : (
         <div>
-          <a
+          <Link
             className="main-nav-item"
-            href="./user.html"
+            to="/profile"
           >
-            <i className="fa fa-user-circle"></i> {user.firstName}{" "}
-          </a>
+            <i className="fa fa-user-circle"></i> {firstName}{" "}
+          </Link>
           <a
             className="main-nav-item"
             href="#"
