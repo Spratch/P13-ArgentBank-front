@@ -1,36 +1,41 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-interface ProfileState {
+interface UpdateState {
   status: "idle" | "loading" | "succeeded" | "failed";
   message: string | null;
   user: {
-    email: string;
     firstName: string;
     lastName: string;
-    createdAt: string;
-    updatedAt: string;
-    id: string;
   } | null;
 }
 
-export const profileApi = createAsyncThunk<
-  ProfileState["user"],
-  string,
+interface UpdateRequest {
+  token: string | null;
+  body: {
+    firstName: string;
+    lastName: string;
+  };
+}
+
+export const updateApi = createAsyncThunk<
+  { firstName: string; lastName: string },
+  UpdateRequest,
   { rejectValue: string }
->("profile/fetchProfile", async (token: string, { rejectWithValue }) => {
+>("update/fetchUpdate", async (payload: UpdateRequest, { rejectWithValue }) => {
   try {
     const response = await fetch("http://localhost:3001/api/v1/user/profile", {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${payload.token}`
+      },
+      body: JSON.stringify(payload.body)
     });
 
     const data = await response.json();
 
     if (!data.body) {
-      return rejectWithValue(data.message || "Failed to fetch profile");
+      return rejectWithValue(data.message || "Failed to update profile");
     }
 
     return data.body;
@@ -39,36 +44,34 @@ export const profileApi = createAsyncThunk<
     if (error instanceof Error) {
       message = error.message;
     } else {
-      message = "Failed to fetch profile";
+      message = "Login failed";
     }
     return rejectWithValue(message);
   }
 });
 
-const initialState: ProfileState = {
+const initialState: UpdateState = {
   status: "idle",
   message: null,
   user: null
 };
 
-export const profileSlice = createSlice({
-  name: "profile",
+export const updateSlice = createSlice({
+  name: "update",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(profileApi.pending, (state) => {
+      .addCase(updateApi.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(profileApi.fulfilled, (state, action) => {
+      .addCase(updateApi.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload;
       })
-      .addCase(profileApi.rejected, (state, action) => {
+      .addCase(updateApi.rejected, (state, action) => {
         state.status = "failed";
-        state.message = action.error.message || "Failed to fetch profile";
+        state.message = action.payload as string;
       });
   }
 });
-
-export const profileReducer = profileSlice.reducer;
