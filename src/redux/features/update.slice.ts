@@ -75,3 +75,5 @@ export const updateSlice = createSlice({
       });
   }
 });
+
+export const updateReducer = updateSlice.reducer;

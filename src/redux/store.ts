@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authReducer } from "./features/auth.slice";
 import { profileReducer } from "./features/profile.slice";
+import { updateReducer } from "./features/update.slice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    profile: profileReducer
+    profile: profileReducer,
+    update: updateReducer
   }
 });
 

@@ -18,8 +18,9 @@ export default function UserHero() {
 
     try {
       if (token) {
-        dispatch(updateApi({ token, body: { firstName, lastName } }));
-        dispatch(profileApi(token));
+        await dispatch(updateApi({ token, body: { firstName, lastName } }));
+        await dispatch(profileApi(token));
+        setIsEditing(false);
       }
     } catch (err) {
       console.error("Failed to update user:", err);
