@@ -26,10 +26,10 @@ export default function SignInForm() {
       <h1>Sign In</h1>
       <form>
         <div className="input-wrapper">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="email">Email</label>
           <input
             type="text"
-            id="username"
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
